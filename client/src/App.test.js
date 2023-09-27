@@ -1,8 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+test('should render the App', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
 });
+
+test('should render the Navbar', () => {
+  render(<App />);
+  expect(screen.getByRole("navigation")).toBeInTheDocument();
+})
