@@ -22,7 +22,7 @@ module Api
         @recipe = Recipe.new(recipe_params)
 
         if @recipe.save
-          render json: @recipe, status: :created, location: @recipe
+          render json: @recipe, status: :created # , location: @recipe # location is unecessary in an api
         else
           render json: @recipe.errors, status: :unprocessable_entity
         end

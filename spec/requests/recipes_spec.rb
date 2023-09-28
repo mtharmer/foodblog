@@ -18,13 +18,8 @@ RSpec.describe '/recipes', type: :request do
   # This should return the minimal set of attributes required to create a valid
   # Recipe. As you add validations to Recipe, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) do
-    skip('Add a hash of attributes valid for your model')
-  end
-
-  let(:invalid_attributes) do
-    skip('Add a hash of attributes invalid for your model')
-  end
+  let(:user) { create(:user) }
+  let(:otheruser) { create(:user, email: 'another@example.com') }
 
   # This should return the minimal set of values that should be in the headers
   # in order to pass any filters (e.g. authentication) defined in
@@ -35,16 +30,27 @@ RSpec.describe '/recipes', type: :request do
   end
 
   describe 'GET /index' do
+    before do
+      create(:recipe, title: 'Some Recipe', user: user)
+      create(:recipe, title: 'Another Recipe', user: user)
+    end
+
     it 'renders a successful response' do
-      Recipe.create! valid_attributes
       get api_v1_recipes_url, headers: valid_headers, as: :json
       expect(response).to be_successful
+    end
+
+    it 'returns a list of recipes' do
+      get api_v1_recipes_url, headers: valid_headers, as: :json
+      body = JSON.parse(response.body)
+      expect(body.length).to eq(2)
     end
   end
 
   describe 'GET /show' do
     it 'renders a successful response' do
-      recipe = Recipe.create! valid_attributes
+      recipe = create(:recipe, title: 'Some Recipe', user: user)
+      # recipe = Recipe.create! valid_attributes
       get api_v1_recipe_url(recipe), as: :json
       expect(response).to be_successful
     end
@@ -52,32 +58,36 @@ RSpec.describe '/recipes', type: :request do
 
   describe 'POST /create' do
     context 'with valid parameters' do
+      let(:recipe) { build(:recipe, user: user) }
+
       it 'creates a new Recipe' do
         expect do
           post api_v1_recipes_url,
-               params: { recipe: valid_attributes }, headers: valid_headers, as: :json
+               params: { recipe: recipe }, headers: valid_headers, as: :json
         end.to change(Recipe, :count).by(1)
       end
 
       it 'renders a JSON response with the new recipe' do
         post api_v1_recipes_url,
-             params: { recipe: valid_attributes }, headers: valid_headers, as: :json
+             params: { recipe: recipe }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:created)
         expect(response.content_type).to match(a_string_including('application/json'))
       end
     end
 
     context 'with invalid parameters' do
+      let(:recipe) { build(:recipe, user: nil) }
+
       it 'does not create a new Recipe' do
         expect do
           post api_v1_recipes_url,
-               params: { recipe: invalid_attributes }, as: :json
+               params: { recipe: recipe }, as: :json
         end.to change(Recipe, :count).by(0)
       end
 
       it 'renders a JSON response with errors for the new recipe' do
         post api_v1_recipes_url,
-             params: { recipe: invalid_attributes }, headers: valid_headers, as: :json
+             params: { recipe: recipe }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to match(a_string_including('application/json'))
       end
@@ -86,32 +96,37 @@ RSpec.describe '/recipes', type: :request do
 
   describe 'PATCH /update' do
     context 'with valid parameters' do
-      let(:new_attributes) do
-        skip('Add a hash of attributes valid for your model')
+      let(:recipe) { create(:recipe, user: user) }
+      let(:new_recipe) { recipe }
+
+      before do
+        new_recipe.instructions = 'Other Instructions'
       end
 
       it 'updates the requested recipe' do
-        recipe = Recipe.create! valid_attributes
         patch api_v1_recipe_url(recipe),
-              params: { recipe: new_attributes }, headers: valid_headers, as: :json
-        recipe.reload
-        skip('Add assertions for updated state')
+              params: { recipe: new_recipe }, headers: valid_headers, as: :json
+        updated_recipe = Recipe.find_by(id: recipe.id)
+        expect(updated_recipe.instructions).to eq('Other Instructions')
       end
 
       it 'renders a JSON response with the recipe' do
-        recipe = Recipe.create! valid_attributes
         patch api_v1_recipe_url(recipe),
-              params: { recipe: new_attributes }, headers: valid_headers, as: :json
+              params: { recipe: new_recipe }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to match(a_string_including('application/json'))
+        expect(response.body).to match(a_string_including('Other Instructions'))
       end
     end
 
     context 'with invalid parameters' do
+      let(:recipe) { create(:recipe, user: user) }
+      let(:new_recipe) { recipe }
+
       it 'renders a JSON response with errors for the recipe' do
-        recipe = Recipe.create! valid_attributes
+        new_recipe.user = nil
         patch api_v1_recipe_url(recipe),
-              params: { recipe: invalid_attributes }, headers: valid_headers, as: :json
+              params: { recipe: new_recipe }, headers: valid_headers, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to match(a_string_including('application/json'))
       end
@@ -120,7 +135,7 @@ RSpec.describe '/recipes', type: :request do
 
   describe 'DELETE /destroy' do
     it 'destroys the requested recipe' do
-      recipe = Recipe.create! valid_attributes
+      recipe = create(:recipe, user: user)
       expect do
         delete api_v1_recipe_url(recipe), headers: valid_headers, as: :json
       end.to change(Recipe, :count).by(-1)

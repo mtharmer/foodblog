@@ -15,12 +15,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_27_173506) do
   enable_extension "plpgsql"
 
   create_table "recipes", force: :cascade do |t|
-    t.string "title"
+    t.string "title", null: false
     t.text "ingredients"
     t.text "instructions"
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["title", "user_id"], name: "index_recipes_on_title_and_user_id", unique: true
     t.index ["user_id"], name: "index_recipes_on_user_id"
   end
 
