@@ -5,6 +5,6 @@ FactoryBot.define do
     title { 'Some Recipe' }
     ingredients { 'Some Ingredients' }
     instructions { 'Some Instructions' }
-    user
+    association :user, factory: :recipe_user
   end
 end
