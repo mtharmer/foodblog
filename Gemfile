@@ -45,8 +45,8 @@ group :development, :test do
   gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "factory_bot_rails", "~> 6.2"
   gem "faker", "~> 3.2"
-  gem "rspec", "~> 3.12"
-  gem "rspec-rails", "~> 6.0"
+  # gem "rspec", "~> 3.12"
+  # gem "rspec-rails", "~> 6.0"
   gem "rubocop", "~> 1.56"
   gem "rubocop-rails", "~> 2.21", require: false
   gem "rubocop-rspec", "~> 2.24", require: false
@@ -55,4 +55,10 @@ end
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
+end
+
+group :test do
+  gem "simplecov", "~> 0.22.0", require: false
+  gem "rspec", "~> 3.12"
+  gem "rspec-rails", "~> 6.0"
 end
