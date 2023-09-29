@@ -19,9 +19,6 @@ RSpec.describe '/api/v1/comments', type: :request do
   # Comment. As you add validations to Comment, be sure to
   # adjust the attributes here as well.
 
-  let(:user) { create(:user) }
-  let(:recipe) { create(:recipe, user: user) }
-
   # This should return the minimal set of values that should be in the headers
   # in order to pass any filters (e.g. authentication) defined in
   # CommentsController, or in your router and rack
@@ -29,6 +26,8 @@ RSpec.describe '/api/v1/comments', type: :request do
   let(:valid_headers) do
     {}
   end
+
+  let(:user) { create(:user) }
 
   describe 'GET /index' do
     it 'renders a successful response' do
@@ -39,7 +38,7 @@ RSpec.describe '/api/v1/comments', type: :request do
 
   describe 'GET /show' do
     it 'renders a successful response' do
-      new_comment = create(:comment, recipe: recipe, user: user)
+      new_comment = create(:comment, user: user)
       get api_v1_comment_url(new_comment), as: :json
       expect(response).to be_successful
     end
@@ -47,7 +46,9 @@ RSpec.describe '/api/v1/comments', type: :request do
 
   describe 'POST /create' do
     context 'with valid parameters' do
-      let(:new_comment) { build(:comment, recipe: recipe, user: user) }
+      let(:user) { create(:user) }
+      let(:recipe) { create(:recipe) }
+      let(:new_comment) { build(:comment, user: user, recipe: recipe) }
 
       it 'creates a new Comment' do
         expect do
@@ -85,7 +86,7 @@ RSpec.describe '/api/v1/comments', type: :request do
 
   describe 'PATCH /update' do
     context 'with valid parameters' do
-      let(:comment) { create(:comment, content: 'Original Content', recipe: recipe, user: user) }
+      let(:comment) { create(:comment, content: 'Original Content') }
       let(:new_comment) { comment }
 
       it 'updates the requested comment' do
@@ -106,7 +107,7 @@ RSpec.describe '/api/v1/comments', type: :request do
     end
 
     context 'with invalid parameters' do
-      let(:comment) { create(:comment, content: 'Original Content', recipe: recipe, user: user) }
+      let(:comment) { create(:comment) }
       let(:new_comment) { comment }
 
       it 'renders a JSON response with errors for the comment' do
@@ -121,7 +122,7 @@ RSpec.describe '/api/v1/comments', type: :request do
 
   describe 'DELETE /destroy' do
     it 'destroys the requested comment' do
-      comment = create(:comment, user: user, recipe: recipe)
+      comment = create(:comment)
       expect do
         delete api_v1_comment_url(comment), headers: valid_headers, as: :json
       end.to change(Comment, :count).by(-1)

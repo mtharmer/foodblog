@@ -18,8 +18,6 @@ RSpec.describe '/api/v1/recipes', type: :request do
   # This should return the minimal set of attributes required to create a valid
   # Recipe. As you add validations to Recipe, be sure to
   # adjust the attributes here as well.
-  let(:user) { create(:user) }
-  let(:otheruser) { create(:user, email: 'another@example.com') }
 
   # This should return the minimal set of values that should be in the headers
   # in order to pass any filters (e.g. authentication) defined in
@@ -31,8 +29,7 @@ RSpec.describe '/api/v1/recipes', type: :request do
 
   describe 'GET /index' do
     before do
-      create(:recipe, title: 'Some Recipe', user: user)
-      create(:recipe, title: 'Another Recipe', user: user)
+      create_list(:recipe, 2)
     end
 
     it 'renders a successful response' do
@@ -49,8 +46,7 @@ RSpec.describe '/api/v1/recipes', type: :request do
 
   describe 'GET /show' do
     it 'renders a successful response' do
-      recipe = create(:recipe, title: 'Some Recipe', user: user)
-      # recipe = Recipe.create! valid_attributes
+      recipe = create(:recipe)
       get api_v1_recipe_url(recipe), as: :json
       expect(response).to be_successful
     end
@@ -58,6 +54,7 @@ RSpec.describe '/api/v1/recipes', type: :request do
 
   describe 'POST /create' do
     context 'with valid parameters' do
+      let(:user) { create(:user) }
       let(:recipe) { build(:recipe, user: user) }
 
       it 'creates a new Recipe' do
@@ -96,7 +93,7 @@ RSpec.describe '/api/v1/recipes', type: :request do
 
   describe 'PATCH /update' do
     context 'with valid parameters' do
-      let(:recipe) { create(:recipe, user: user) }
+      let(:recipe) { create(:recipe) }
       let(:new_recipe) { recipe }
 
       before do
@@ -120,7 +117,7 @@ RSpec.describe '/api/v1/recipes', type: :request do
     end
 
     context 'with invalid parameters' do
-      let(:recipe) { create(:recipe, user: user) }
+      let(:recipe) { create(:recipe) }
       let(:new_recipe) { recipe }
 
       it 'renders a JSON response with errors for the recipe' do
@@ -135,7 +132,7 @@ RSpec.describe '/api/v1/recipes', type: :request do
 
   describe 'DELETE /destroy' do
     it 'destroys the requested recipe' do
-      recipe = create(:recipe, user: user)
+      recipe = create(:recipe)
       expect do
         delete api_v1_recipe_url(recipe), headers: valid_headers, as: :json
       end.to change(Recipe, :count).by(-1)

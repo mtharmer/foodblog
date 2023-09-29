@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :comment do
-    content { 'Some cool comment' }
-    association :user, factory: :comment_user
+    content { Faker::Quote.matz }
+    user
     recipe
   end
 end

@@ -2,9 +2,9 @@
 
 FactoryBot.define do
   factory :recipe do
-    title { 'Some Recipe' }
-    ingredients { 'Some Ingredients' }
-    instructions { 'Some Instructions' }
-    association :user, factory: :recipe_user
+    title { Faker::Food.unique.dish }
+    ingredients { Faker::Food.ingredient }
+    instructions { Faker::Food.description }
+    user
   end
 end
