@@ -21,7 +21,7 @@ export default function Recipes() {
   return (
     <div className="container text-center">
       <h1>Recipes</h1>
-      <div className="row row-cols-3">
+      <div className="row row-cols-3" data-testid="recipe-list-grid">
         <RecipeList recipes={recipes} />
       </div>
     </div>

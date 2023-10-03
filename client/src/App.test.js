@@ -17,6 +17,6 @@ describe("Routing", () => {
     fireEvent.click(recipesLink)
 
     expect(screen.queryByText(/welcome/i)).not.toBeInTheDocument();
-    expect(await screen.findByRole("heading", { value: "Recipes" })).toBeInTheDocument()
+    expect(screen.queryByRole("heading", { value: "Recipes" })).toBeInTheDocument()
   });
 });
