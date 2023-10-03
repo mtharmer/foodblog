@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useDispatch } from 'react-redux';
-import { login } from 'reducers/authSlice';
+import { useDispatch } from "react-redux";
+import { login } from "reducers/authSlice";
 
 export default function Login() {
   const [user, setUser] = useState({email: "", password: ""});

@@ -1,11 +1,12 @@
-import { render, screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import App from './App';
+import { renderWithProviders } from 'helpers/testHelper';
 
-test('should render the App', () => {
-  render(<App />);
-});
-
-test('should render the Navbar', () => {
-  render(<App />);
-  expect(screen.getByRole("navigation")).toBeInTheDocument();
+test('should render the Navbar', async () => {
+  renderWithProviders(<App />);
+  let nav;
+  await waitFor(() => {
+    nav = screen.getByRole("navigation");
+  })
+  expect(nav).toBeInTheDocument();
 })

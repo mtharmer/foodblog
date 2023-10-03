@@ -1,27 +1,27 @@
-import { configureStore } from '@reduxjs/toolkit';
-import { persistStore, persistReducer, REHYDRATE } from 'redux-persist';
-import storageSession from 'redux-persist/lib/storage/session';
+import { configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer, REHYDRATE } from "redux-persist";
+import storageSession from "redux-persist/lib/storage/session";
 
-import authReducer from './reducers/authSlice';
-import hardSet from 'redux-persist/es/stateReconciler/hardSet';
+import authReducer from "reducers/authSlice";
+import recipeReducer from "reducers/recipeSlice";
 
-const persistConfig = {
-  key: 'auth',
-  storage: storageSession,
-  stateReconciler: hardSet
+const persistAuthConfig = {
+  key: "auth",
+  storage: storageSession
 }
 
-const persistAuthReducer = persistReducer(persistConfig, authReducer);
+const persistAuthReducer = persistReducer(persistAuthConfig, authReducer);
 
 export const store = configureStore({
   reducer: {
-    auth: persistAuthReducer
+    auth: persistAuthReducer,
+    recipes: recipeReducer
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
     serializableCheck: {
       ignoreActions: [REHYDRATE]
     }
   })
-})
+});
 
 export const persistor = persistStore(store);

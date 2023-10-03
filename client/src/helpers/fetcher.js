@@ -1,20 +1,20 @@
-const baseHeaders = { 'Content-Type': 'application/json' }
+const baseHeaders = { "Content-Type": "application/json" }
 
 function getAuthHeaders (auth) {
   return {
     ...baseHeaders,
-    'uid': auth.user.uid,
-    'client': auth.token.client,
-    'access-token': auth.token.token
+    "uid": auth.user.uid,
+    "client": auth.token.client,
+    "access-token": auth.token.token
   }
 }
 
-export async function fetcher(url, method, headers = baseHeaders, body = {}) {
+export async function fetcher(url, method, headers = baseHeaders, body = null) {
   try {
     const res = await fetch(url, {
       method,
       headers,
-      body: JSON.stringify(body)
+      body: (body) ? JSON.stringify(body) : null
     });
     if (res.ok) {
       return res.json();
@@ -26,21 +26,21 @@ export async function fetcher(url, method, headers = baseHeaders, body = {}) {
 }
 
 fetcher.get = function (url) {
-  return fetcher(url, 'GET')
+  return fetcher(url, "GET")
 }
 
 fetcher.post = function (url, data) {
-  return fetcher(url, 'POST', baseHeaders, data)
+  return fetcher(url, "POST", baseHeaders, data)
 }
 
 fetcher.authGet = function (url, auth) {
-  return fetcher(url, 'GET', getAuthHeaders(auth));
+  return fetcher(url, "GET", getAuthHeaders(auth));
 }
 
 fetcher.authPost = function (url, data, auth) {
-  return fetcher(url, 'POST', getAuthHeaders(auth), data);
+  return fetcher(url, "POST", getAuthHeaders(auth), data);
 }
 
 fetcher.authDelete = function(url, auth) {
-  return fetcher(url, 'DELETE', getAuthHeaders(auth));
+  return fetcher(url, "DELETE", getAuthHeaders(auth));
 }

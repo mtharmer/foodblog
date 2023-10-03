@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { signup } from "reducers/authSlice";
@@ -18,6 +17,7 @@ export default function Signup() {
   async function clickSubmit(event) {
     event.preventDefault();
     dispatch(signup(user));
+    setSuccess(true);
   }
 
   const successfulSignup = (

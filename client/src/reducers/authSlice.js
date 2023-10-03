@@ -1,49 +1,49 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { fetcher } from 'helpers/fetcher';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { fetcher } from "helpers/fetcher";
 
 const blankUser = {
-  uid: '',
-  email: '',
-  provider: '',
+  uid: "",
+  email: "",
+  provider: "",
   id: 0,
-  name: '',
+  name: "",
   allowPasswordChange: false
 }
 
 const blankToken = {
-  client: '',
-  accessToken: '',
-  tokenHash: '',
+  client: "",
+  accessToken: "",
+  tokenHash: "",
   expiry: 0
 }
 
 const initialState = {
   loggedIn: false,
   loading: false,
-  status: '',
+  status: "",
   user:  blankUser,
   token: blankToken
 }
 
-export const login = createAsyncThunk('auth/login', async (user) => {
-  const res = await fetcher.post('http://localhost:3001/auth/sign_in', user);
+export const login = createAsyncThunk("auth/login", async (user) => {
+  const res = await fetcher.post("http://localhost:3001/auth/sign_in", user);
   return res
 });
 
-export const logout = createAsyncThunk('auth/logout', async (data) => {
-  const res = await fetcher.authDelete('http://localhost:3001/auth/sign_out', data);
+export const logout = createAsyncThunk("auth/logout", async (data) => {
+  const res = await fetcher.authDelete("http://localhost:3001/auth/sign_out", data);
   return res;
 });
 
-export const signup = createAsyncThunk('auth/signup', async (user) => {
-  const res = await fetcher.post('http://localhost:3001/auth', user);
+export const signup = createAsyncThunk("auth/signup", async (user) => {
+  const res = await fetcher.post("http://localhost:3001/auth", user);
   return res;
 });
 
 // TODO: Notifications on successful/failed account actions
 
 export const authSlice = createSlice({
-  name: 'counter',
+  name: "auth",
   initialState,
   reducers: {
   },
@@ -56,23 +56,23 @@ export const authSlice = createSlice({
         state.loading = false
         state.loggedIn = true
       })
-      .addCase(login.pending, (state, action) => {
+      .addCase(login.pending, (state) => {
         state.loading = true;
       })
-      .addCase(login.rejected, (state, action) => {
+      .addCase(login.rejected, (state) => {
         state.loading = false;
       })
-      .addCase(logout.fulfilled, (state, action) => {
+      .addCase(logout.fulfilled, (state) => {
         state.user = blankUser;
         state.token = blankToken;
         state.loggedIn = false;
         state.loading = false;
       })
-      .addCase(signup.fulfilled, (state, action) => {
-        state.status = 'success';
+      .addCase(signup.fulfilled, (state) => {
+        state.status = "success";
       })
-      .addCase(logout.rejected, (state, action) => {
-        state.status = 'failed';
+      .addCase(logout.rejected, (state) => {
+        state.status = "failed";
       })
   }
 })
