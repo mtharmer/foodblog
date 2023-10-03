@@ -1,12 +1,22 @@
-import { screen, waitFor } from '@testing-library/react';
-import App from './App';
-import { renderWithProviders } from 'helpers/testHelper';
+import { fireEvent, screen } from "@testing-library/react";
+import App from "./App";
+import { renderWithProviders } from "helpers/testHelper";
 
-test('should render the Navbar', async () => {
-  renderWithProviders(<App />);
-  let nav;
-  await waitFor(() => {
-    nav = screen.getByRole("navigation");
-  })
-  expect(nav).toBeInTheDocument();
-})
+describe("App", () => {
+  test("should render the Navbar", async () => {
+    renderWithProviders(<App />);
+    expect(await screen.findByRole("navigation")).toBeInTheDocument();
+  });
+});
+
+describe("Routing", () => {
+  test("should render the recipes route", async () => {
+    renderWithProviders(<App />);
+    const recipesLink = await screen.findByText(/recipes/i)
+    expect(recipesLink).toBeInTheDocument();
+    fireEvent.click(recipesLink)
+
+    expect(screen.queryByText(/welcome/i)).not.toBeInTheDocument();
+    expect(await screen.findByRole("heading", { value: "Recipes" })).toBeInTheDocument()
+  });
+});

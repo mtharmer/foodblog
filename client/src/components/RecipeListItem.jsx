@@ -14,11 +14,11 @@ export default function RecipeListItem({recipe}) {
   // Can utilize a selector to do this in redux
 
   return (
-    <div className="card w-100 h-100">
+    <div className="card w-100 h-100" data-testid="recipe-card-div">
       <h4>{recipe.title}</h4>
       <p>{recipe.instructions}</p>
       <p>{recipe.ingredients}</p>
       <button className="btn btn-primary" onClick={selectRecipe}>Go to recipe</button>
     </div>
-  )
+  );
 }

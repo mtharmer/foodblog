@@ -15,8 +15,8 @@ export default function RecipeList({recipes = []}) {
   );
 
   return (
-    <>
+    <div data-testid="recipe-list-div">
       {(recipes.length > 0) ? showRecipes : noRecipes}
-    </>
+    </div>
   );
 }
