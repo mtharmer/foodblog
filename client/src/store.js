@@ -1,4 +1,4 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import { persistStore, persistReducer, REHYDRATE } from 'redux-persist';
 import storageSession from 'redux-persist/lib/storage/session';
 
@@ -25,12 +25,3 @@ export const store = configureStore({
 })
 
 export const persistor = persistStore(store);
-
-// export default { store, persistor }
-
-// export default () => {
-//   const persistor = persistStore(store);
-//   return {store, persistor}
-// }
-
-// export default { store, persistStore(store) }

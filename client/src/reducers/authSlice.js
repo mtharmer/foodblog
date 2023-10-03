@@ -20,25 +20,27 @@ const blankToken = {
 const initialState = {
   loggedIn: false,
   loading: false,
+  status: '',
   user:  blankUser,
   token: blankToken
 }
 
-export const login = createAsyncThunk('auth/postLogin', async (user) => {
+export const login = createAsyncThunk('auth/login', async (user) => {
   const res = await fetcher.post('http://localhost:3001/auth/sign_in', user);
   return res
 });
 
-export const logout = createAsyncThunk('auth/postLogout', async (data) => {
-  const res = await fetcher.delete('http://localhost:3001/auth/sign_out', {}, {
-      'Content-Type': 'application/json',
-      'uid': data.uid,
-      'client': data.client,
-      'access-token': data.token
-    }
-  );
+export const logout = createAsyncThunk('auth/logout', async (data) => {
+  const res = await fetcher.authDelete('http://localhost:3001/auth/sign_out', data);
   return res;
 });
+
+export const signup = createAsyncThunk('auth/signup', async (user) => {
+  const res = await fetcher.post('http://localhost:3001/auth', user);
+  return res;
+});
+
+// TODO: Notifications on successful/failed account actions
 
 export const authSlice = createSlice({
   name: 'counter',
@@ -66,12 +68,13 @@ export const authSlice = createSlice({
         state.loggedIn = false;
         state.loading = false;
       })
+      .addCase(signup.fulfilled, (state, action) => {
+        state.status = 'success';
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.status = 'failed';
+      })
   }
 })
 
-// export const { login, logout } = authSlice.actions;
-
 export default authSlice.reducer;
-
-export const getUser = (state) => state.auth.user;
-export const getToken = (state) => state.auth.token;

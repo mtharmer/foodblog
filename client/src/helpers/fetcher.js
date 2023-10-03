@@ -1,10 +1,15 @@
 const baseHeaders = { 'Content-Type': 'application/json' }
-const authHeaders = {
-  ...baseHeaders,
+
+function getAuthHeaders (auth) {
+  return {
+    ...baseHeaders,
+    'uid': auth.user.uid,
+    'client': auth.token.client,
+    'access-token': auth.token.token
+  }
 }
 
-export async function fetcher(url, method, headers = {}, body = {}) {
-
+export async function fetcher(url, method, headers = baseHeaders, body = {}) {
   try {
     const res = await fetch(url, {
       method,
@@ -21,13 +26,21 @@ export async function fetcher(url, method, headers = {}, body = {}) {
 }
 
 fetcher.get = function (url) {
-  return fetcher(url, 'GET', baseHeaders)
+  return fetcher(url, 'GET')
 }
 
 fetcher.post = function (url, data) {
   return fetcher(url, 'POST', baseHeaders, data)
 }
 
-fetcher.delete = function(url, data = {}, headers = baseHeaders) {
-  return fetcher(url, 'DELETE', headers, data);
+fetcher.authGet = function (url, auth) {
+  return fetcher(url, 'GET', getAuthHeaders(auth));
+}
+
+fetcher.authPost = function (url, data, auth) {
+  return fetcher(url, 'POST', getAuthHeaders(auth), data);
+}
+
+fetcher.authDelete = function(url, auth) {
+  return fetcher(url, 'DELETE', getAuthHeaders(auth));
 }

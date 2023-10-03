@@ -1,10 +1,13 @@
 import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { signup } from "reducers/authSlice";
 
 export default function Signup() {
   const [user, setUser] = useState({email: "", password: "", password_confirmation: ""});
   const [success, setSuccess] = useState(false);
+  const dispatch = useDispatch();
 
   function inputChanged(event) {
     const name = event.target.name;
@@ -14,7 +17,7 @@ export default function Signup() {
 
   async function clickSubmit(event) {
     event.preventDefault();
-    // dispatchEvent(doSignup(user));
+    dispatch(signup(user));
   }
 
   const successfulSignup = (
